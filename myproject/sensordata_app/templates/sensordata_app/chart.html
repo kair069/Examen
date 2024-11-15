@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico de Temperatura y Humedad</title>
+
+    <!-- Cargar Chart.js desde un CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Cargar Moment.js para formatear las fechas -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+</head>
+<body>
+    <h1>Gráfico de Temperatura y Humedad en función del Tiempo</h1>
+
+    <!-- Crear un contenedor para el gráfico -->
+    <canvas id="temperatureHumidityChart" width="800" height="400"></canvas>
+
+    <script>
+        var ctx = document.getElementById('temperatureHumidityChart').getContext('2d');
+        
+        // Obtener los datos desde Django
+        var times = {{ times|safe }};
+        var temperatures = {{ temperatures|safe }};
+        var humidities = {{ humidities|safe }};
+
+        // Formatear las fechas para mostrar solo mes y año
+        var formattedTimes = times.map(function(time) {
+            return moment(time).format('MMMM YYYY');  // Formato: Mes Año (ej. 'Marzo 2024')
+        });
+
+        // Crear el gráfico
+        var temperatureHumidityChart = new Chart(ctx, {
+            type: 'line',  // Tipo de gráfico
+            data: {
+                labels: formattedTimes,  // Ejes X: tiempo (formateado)
+                datasets: [{
+                    label: 'Temperatura (°C)',  // Etiqueta del gráfico
+                    data: temperatures,  // Datos de temperatura
+                    borderColor: 'rgb(255, 99, 132)',  // Color de la línea de temperatura
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',  // Relleno debajo de la línea (color suave)
+                    fill: true,  // Rellenar el área debajo de la línea
+                    tension: 0.1  // Suavizar la curva de la línea
+                }, {
+                    label: 'Humedad (%)',  // Etiqueta del gráfico
+                    data: humidities,  // Datos de humedad
+                    borderColor: 'rgb(54, 162, 235)',  // Color de la línea de humedad
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',  // Relleno debajo de la línea (color suave)
+                    fill: true,  // Rellenar el área debajo de la línea
+                    tension: 0.1  // Suavizar la curva de la línea
+                }]
+            },
+            options: {
+                responsive: true,  // Hacer el gráfico responsive (se adapta al tamaño de la pantalla)
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Mes y Año'
+                        },
+                        ticks: {
+                            autoSkip: true,  // Evitar que se sobrepongan las etiquetas
+                            maxRotation: 45,  // Rota las etiquetas para que no se apilen
+                            minRotation: 30
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Valor'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

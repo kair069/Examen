@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Sensor Data</title>
+</head>
+<body>
+    <h1>Datos del Sensor</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Temperatura (°C)</th>
+            <th>Humedad (%)</th>
+            <th>Fecha y Hora</th>
+        </tr>
+        {% for dato in datos %}
+        <tr>
+            <td>{{ dato.id }}</td>
+            <td>{{ dato.temperature }}</td>
+            <td>{{ dato.humidity }}</td>
+            <td>{{ dato.datetime }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
